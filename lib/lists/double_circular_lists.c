@@ -28,8 +28,10 @@ static void empty_list(list_t *list)
         free(current->prev->data);
         free(current->prev);
     }
-    if (list->prev != list)
+    if (list->prev != list) {
+        free(list->prev->data);
         free(list->prev);
+    }
 }
 
 void delete_list(list_t *root)
