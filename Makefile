@@ -101,7 +101,7 @@ LFLAGS = $(addprefix -L. , $(TMPFLAGS)) -l csfml-graphics -l csfml-system -lm
 all: $(OSRC) $(OSRC_M) lib
 	@$(CC) $(IFLAGS) -o $(NAME) $(OSRC) $(OSRC_M) $(LFLAGS) &&	\
 	$(ECHO) $(GREEN) "Compilation Done" $(DEFAULT) ||	\
-	$(ECHO) $(RED) "Compilation Fail" $(DEFAULT)
+	$(ECHO) $(RED) "Compilation Failed" $(DEFAULT)
 
 lib:
 ifeq ($(MAKECMDGOALS), re)
