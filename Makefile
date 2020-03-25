@@ -11,6 +11,20 @@
 
 CC	=	gcc
 
+##### COLORS #######
+
+ECHO	=	echo -e
+
+DEFAULT	=	"\e[39m"
+
+RED	=	"\e[31m"
+
+GREEN	=	"\e[32m"
+
+YELLOW	=	"\e[33m"
+
+####################
+
 RENDER_SRCS	=	render/simple_render.c
 
 DESTROY_SRCS	=	destroy/simple_destroy.c
@@ -71,7 +85,7 @@ COVERAGE_B	=	gcovr --exclude tests/ -b
 # Flags #
 #########
 
-CFLAGS += -W -Wall -Wextra -pedantic
+CFLAGS += -W -Wall -Wextra -pedantic ## -Wpadded
 
 TFLAGS += --coverage -lcriterion -g3
 
@@ -85,7 +99,9 @@ LFLAGS = $(addprefix -L. , $(TMPFLAGS)) -l csfml-graphics -l csfml-system -lm
 ############
 
 all: $(OSRC) $(OSRC_M) lib
-	$(CC) $(IFLAGS) -o $(NAME) $(OSRC) $(OSRC_M) $(LFLAGS)
+	@$(CC) $(IFLAGS) -o $(NAME) $(OSRC) $(OSRC_M) $(LFLAGS) &&	\
+	$(ECHO) $(GREEN) "Compilation Done" $(DEFAULT) ||	\
+	$(ECHO) $(RED) "Compilation Fail" $(DEFAULT)
 
 lib:
 ifeq ($(MAKECMDGOALS), re)
@@ -99,32 +115,38 @@ else
 endif
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@ &&	\
+	$(ECHO) $(GREEN) "OK " $(DEFAULT) $(basename $(@F)) "-------> "	\
+	$(GREEN) $@ $(DEFAULT) || $(ECHO) $(RED) "ERROR " $< $(DEFAULT)
 
 tests_run:	clean $(OSRC) $(OSRC_T) lib
 	$(CC) -o $(NAME_TESTS) $(OSRC_T) $(OSRC) $(IFLAGS) $(TFLAGS) $(LFLAGS)
 	$(RUN_TESTS)
 
 debug: fclean lib
-	$(CC) $(IFLAGS) -o $(NAME) $(SRC) $(SRC_MAIN)  $(LFLAGS) -g3
+	@$(CC) $(IFLAGS) -o $(NAME) $(SRC) $(SRC_MAIN)  $(LFLAGS) -g3 && \
+	$(ECHO) $(GREEN) "Debug Compilation Done" $(DEFAULT) ||	\
+	$(ECHO) $(RED) "Debug Compilation Fail" $(DEFAULT)
 
 coverage:
 	$(COVERAGE)
 	$(COVERAGE_B)
 
 clean:
-	find -type f -name "*~" -delete
-	find -type f -name "#*#" -delete
-	find -type f -name "*.o" -delete
+	@find -type f -name "*~" -delete &&	\
+	find -type f -name "#*#" -delete &&	\
+	find -type f -name "*.o" -delete&&	\
+	$(ECHO) $(YELLOW) "Clean Done" $(DEFAULT)
 
 fclean: clean
-	rm -rf $(NAME)
-	rm -rf $(NAME_TESTS)
-	find -type f -name "a.out" -delete
-	find -type f -name "*.a" -delete
-	find -type f -name "*.gcno" -delete
-	find -type f -name "*.gcda" -delete
-	find -type f -name "vgcore.*" -delete
+	@rm -rf $(NAME) &&	\
+	rm -rf $(NAME_TESTS) &&	\
+	find -type f -name "a.out" -delete &&	\
+	find -type f -name "*.a" -delete &&	\
+	find -type f -name "*.gcno" -delete &&	\
+	find -type f -name "*.gcda" -delete &&	\
+	find -type f -name "vgcore.*" -delete &&	\
+	$(ECHO) $(YELLOW) "Force Clean Done" $(DEFAULT)
 
 re:	fclean all
 
