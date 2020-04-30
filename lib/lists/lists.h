@@ -25,5 +25,6 @@ void add_to_front(list_t *root, list_data_t *data);
 void add_to_queue(list_t *root, list_data_t *data);
 void delete_list(list_t *root);
 list_t *rm_elem(list_t *elem);
+int list_len(list_t *list);
 
 #endif /* !LISTS_H_ */

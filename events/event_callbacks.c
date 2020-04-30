@@ -13,11 +13,13 @@ list_t *scene)
     button_t *button = cursor->data->button;
     int rect_x = button->pos.x;
     int rect_y = button->pos.y;
+    int rect_sup_x = button->rect.width;
+    int rect_sup_y = button->rect.height;
     int x = event->mouseButton.x;
     int y = event->mouseButton.y;
 
-    if ((y < rect_y + MENU_ICON_HEIGHT) && (y > rect_y))
-        if ((x < rect_x + MENU_ICON_WIDTH) && (x > rect_x))
+    if ((y < rect_y + rect_sup_y) && (y > rect_y))
+        if ((x < rect_x + rect_sup_x) && (x > rect_x))
             button->onclick(prog_stat, button, scene, event);
 }
 

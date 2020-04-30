@@ -8,6 +8,18 @@
 #include <stdlib.h>
 #include "./lists.h"
 
+int list_len(list_t *list)
+{
+    int len = 0;
+    list_t *tmp = list->next;
+
+    while (tmp != list) {
+        len++;
+        tmp = tmp->next;
+    }
+    return (len);
+}
+
 list_t *create_list(void)
 {
     list_t *root = malloc(sizeof(list_t));
@@ -28,10 +40,8 @@ static void empty_list(list_t *list)
         free(current->prev->data);
         free(current->prev);
     }
-    if (list->prev != list) {
-        free(list->prev->data);
+    if (list->prev != list)
         free(list->prev);
-    }
 }
 
 void delete_list(list_t *root)
