@@ -30,15 +30,57 @@ RENDER_SRCS	=	render/simple_render.c
 DESTROY_SRCS	=	destroy/simple_destroy.c
 
 EVENT_SRCS	=	events/analyse_event.c	\
-				events/event_callbacks.c
-
-MENU_FOLD	=	game_objects/menu_scene
+				events/event_callbacks.c	\
+				events/player_event_callbacks.c
 
 GAME_FOLD	=	game_objects/game_scene
+GAME_FILES	=	$(GAME_FOLD)/game_scene_init.c	\
+				$(GAME_FOLD)/init_map.c	\
+				$(GAME_FOLD)/map_creation.c	\
+				$(GAME_FOLD)/tile_map_prepare.c	\
+				$(GAME_FOLD)/game_scene_buttons.c
 
-GAME_OBJECTS	=	$(MENU_FOLD)/menu_callbacks.c	\
-					$(MENU_FOLD)/menu_scene_init.c	\
-					$(GAME_FOLD)/game_scene_init.c
+FIGHT_FOLD	=	game_objects/fight_scene
+FIGHT_FILES =	$(FIGHT_FOLD)/init_fight_scene.c	\
+				$(FIGHT_FOLD)/life_handling.c	\
+				$(FIGHT_FOLD)/to_test.c\
+				$(FIGHT_FOLD)/init_player.c\
+				$(FIGHT_FOLD)/init_enemy.c
+
+
+GEN_FOLD	=	$(GAME_FOLD)/generator/
+MAZE_FILES	=	$(GEN_FOLD)perfect_maze.c	\
+				$(GEN_FOLD)handling_tools/char_dbl_stars_handle.c	\
+				$(GEN_FOLD)handling_tools/node_choose.c	\
+				$(GEN_FOLD)handling_tools/special_prim_tools.c
+
+CLOCK_FILES	=	$(GAME_FOLD)/my_clock/clock_get.c	\
+				$(GAME_FOLD)/my_clock/clock.c	\
+				$(GAME_FOLD)/my_clock/clock_speed.c	\
+				$(GAME_FOLD)/my_clock/clock_pause.c
+
+MENU_FOLD	=	game_objects/menu_scene
+MENU_FILES	=	$(MENU_FOLD)/menu_callbacks.c	\
+				$(MENU_FOLD)/menu_scene_init.c
+
+SOUND_FOLD	=	game_objects/music_and_sounds
+SOUND_FILES	=	$(SOUND_FOLD)/music_utilities.c	\
+				$(SOUND_FOLD)/sound_buffer_utilities.c	\
+				$(SOUND_FOLD)/sound_utilities.c
+
+PLAYER_FOLD	=	game_objects/game_scene/player
+PLAYER_FILES	=	$(PLAYER_FOLD)/player_cursor.c	\
+					$(PLAYER_FOLD)/player_cursor_callbacks.c	\
+					$(PLAYER_FOLD)/tilemap_actions.c
+
+GAME_OBJECTS	=	game_objects/find_object.c	\
+					$(MENU_FILES)	\
+					$(GAME_FILES)	\
+					$(MAZE_FILES)	\
+					$(SOUND_FILES)	\
+					$(FIGHT_FILES)	\
+					$(CLOCK_FILES)	\
+					$(PLAYER_FILES)
 
 SRC	=	my_rpg.c	\
 		init_scenes.c	\
@@ -85,14 +127,14 @@ COVERAGE_B	=	gcovr --exclude tests/ -b
 # Flags #
 #########
 
-CFLAGS += -W -Wall -Wextra -pedantic ## -Wpadded
+CFLAGS += -W -Wall -Wextra -pedantic
 
 TFLAGS += --coverage -lcriterion -g3
 
 IFLAGS += -I./include
 
 TMPFLAGS += $(addsuffix .a, $(addprefix lib/lib, $(LIB)))
-LFLAGS = $(addprefix -L. , $(TMPFLAGS)) -l csfml-graphics -l csfml-system -lm
+LFLAGS = $(addprefix -L. , $(TMPFLAGS)) -l csfml-graphics -l csfml-system -l csfml-audio -lm
 
 ############
 # Commands #
@@ -101,7 +143,7 @@ LFLAGS = $(addprefix -L. , $(TMPFLAGS)) -l csfml-graphics -l csfml-system -lm
 all: $(OSRC) $(OSRC_M) lib
 	@$(CC) $(IFLAGS) -o $(NAME) $(OSRC) $(OSRC_M) $(LFLAGS) &&	\
 	$(ECHO) $(GREEN) "Compilation Done" $(DEFAULT) ||	\
-	$(ECHO) $(RED) "Compilation Failed" $(DEFAULT)
+	$(ECHO) $(RED) "Compilation Fail" $(DEFAULT)
 
 lib:
 ifeq ($(MAKECMDGOALS), re)

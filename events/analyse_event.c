@@ -11,7 +11,7 @@ int get_event_type(sfEventType srctype)
 {
     int i = 0;
     unsigned int evttype[NB_EVT_FUNCTIONS] = {sfEvtClosed,
-    sfEvtMouseButtonPressed};
+    sfEvtMouseButtonPressed, sfEvtKeyPressed};
 
     for (i = 0; srctype != evttype[i] && i < NB_EVT_FUNCTIONS; i++);
     return (i < NB_EVT_FUNCTIONS ? i : -1);
@@ -23,7 +23,7 @@ void manage_inputs(sfEvent *event, prog_stat_t *prog_stat, list_t *scene)
     int index = get_event_type(type);
 
     void (*ptr[NB_EVT_FUNCTIONS])(sfEvent *, prog_stat_t *, list_t *)
-    = {close_window, button_clicked};
+    = {close_window, button_clicked, direction_pressed};
     if (index != -1)
         ptr[index](event, prog_stat, scene);
 }
